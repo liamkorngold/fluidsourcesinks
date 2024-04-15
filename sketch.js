@@ -36,15 +36,15 @@ function setup() {
     blobs[i] = new Blob(createVector(random(window.innerWidth),random(window.innerHeight-4)),createVector(0,0));
   }
 
-  n_sinks_sources = 5;
+  n_sinks_sources = 3;
 
   sinks_sources = new Array(n_sinks_sources);
 
   for (i = 0; i < n_sinks_sources; i ++) {
     if(round(random(1)) == 1) {
-      sinks_sources[i] = new Sink(createVector(random(window.innerWidth-20),random(window.innerHeight-20)), 3+random(3));
+      sinks_sources[i] = new Sink(createVector(random(window.innerWidth-20),random(window.innerHeight-20)), 2+random(3));
     } else {
-      sinks_sources[i] = new Source(createVector(random(window.innerWidth-20), random(window.innerHeight-20)), 3+random(3));
+      sinks_sources[i] = new Source(createVector(random(window.innerWidth-20), random(window.innerHeight-20)), 2+random(3));
     }
     console.log(sinks_sources[i].rate);
     
