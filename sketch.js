@@ -36,18 +36,24 @@ function setup() {
     blobs[i] = new Blob(createVector(random(window.innerWidth),random(window.innerHeight-4)),createVector(0,0));
   }
 
-  n_sinks_sources = 3;
+  n_sinks_sources = 2;
 
   sinks_sources = new Array(n_sinks_sources);
+  negative = -1;
 
   for (i = 0; i < n_sinks_sources; i ++) {
     if(round(random(1)) == 1) {
-      sinks_sources[i] = new Sink(createVector(random(window.innerWidth-20),random(window.innerHeight-20)), 2+random(3));
+      sinks_sources[i] = new Sink(createVector(random(window.innerWidth-20),random(window.innerHeight-20)), 10+ negative * random(15));
     } else {
-      sinks_sources[i] = new Source(createVector(random(window.innerWidth-20), random(window.innerHeight-20)), 2+random(3));
+      sinks_sources[i] = new Source(createVector(random(window.innerWidth-20), random(window.innerHeight-20)), 5+ negative *random(3));
     }
     console.log(sinks_sources[i].rate);
     
+    if (negative == -1) {
+      negative = 1;
+    } else {
+      negative = -1;
+    }
     
 
   }
@@ -94,7 +100,7 @@ function draw() {
   }
 
   for (i = 0; i < n_blobs; i++) {
-    blobs[i].velocity = createVector(0,0);
+    blobs[i].acceleration = createVector(0,0);
     for (j = 0; j < n_sinks_sources; j++) {
       stroke(0);
       point(blobs[i].oldPosition);
@@ -103,15 +109,16 @@ function draw() {
 
       // points from blob to sink
       r_vector = p5.Vector.sub(sinks_sources[j].position, blobs[i].position);
-      speed = sinks_sources[j].rate / (2 * Math.PI * r_vector.mag());
+      accel = sinks_sources[j].rate / (2 * Math.PI * r_vector.mag()**2);
       
       if (sinks_sources[j].type == "sink") {
-        blobs[i].velocity.add(r_vector.mult(speed));  
+        blobs[i].acceleration.add(r_vector.mult(accel));  
       } else {
-        blobs[i].velocity.add(r_vector.mult(-speed));
+        blobs[i].acceleration.add(r_vector.mult(-accel));
       }
       
     }
+    blobs[i].velocity.add(blobs[i].acceleration);
     blobs[i].position.add(blobs[i].velocity);
     point(blobs[i].position);
     blobs[i].oldPosition = blobs[i].position;
@@ -120,7 +127,7 @@ function draw() {
   for (i = 0; i < n_blobs; i ++) {
     for (j = 0; j < n_sinks_sources; j++) {
       // small tolerance in case blobs aren't perfectly at the sink
-      if (Math.abs(round(blobs[i].position.x - sinks_sources[j].position.x)) in [0,1,2,3,4,5] & Math.abs(round(blobs[i].position.y-sinks_sources[j].position.y)) in [0,1,2,3,4,5]) {
+      if (Math.abs(round(blobs[i].position.x - sinks_sources[j].position.x)) in [0,1,2,3,4,5,6,7,8,9] & Math.abs(round(blobs[i].position.y-sinks_sources[j].position.y)) in [0,1,2,3,4,5,6,7,8,9]) {
         stroke(0);
         point(blobs[i].position);
         blobs[i] = new Blob(createVector(random(window.innerWidth),random(window.innerHeight-4)),createVector(0,0));
