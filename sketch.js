@@ -142,7 +142,7 @@ function draw() {
     for (j = 0; j < n_sinks_sources; j++) {
       // small tolerance in case blobs aren't perfectly at the sink
       if (sinks_sources[j].type == "sink") {
-        if (Math.abs(round(blobs[i].position.x - sinks_sources[j].position.x)) in [0,1] & Math.abs(round(blobs[i].position.y-sinks_sources[j].position.y)) in [0,1]) {
+        if (Math.abs(round(blobs[i].position.x - sinks_sources[j].position.x)) in [0,1,2,3,4] & Math.abs(round(blobs[i].position.y-sinks_sources[j].position.y)) in [0,1,2,3,4]) {
           stroke(0);
           point(blobs[i].position);
           blobs[i] = new Blob(createVector(random(window.innerWidth),random(window.innerHeight-4)),createVector(0,0));
