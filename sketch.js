@@ -43,9 +43,9 @@ function setup() {
 
   for (i = 0; i < n_sinks_sources; i ++) {
     if(round(random(1)) == 1) {
-      sinks_sources[i] = new Sink(createVector(random(window.innerWidth-20),random(window.innerHeight-20)), 10+ negative * random(15));
+      sinks_sources[i] = new Sink(createVector(random(window.innerWidth-20),random(window.innerHeight-20)), 10+ negative * random(5));
     } else {
-      sinks_sources[i] = new Source(createVector(random(window.innerWidth-20), random(window.innerHeight-20)), 10+ negative *random(15));
+      sinks_sources[i] = new Source(createVector(random(window.innerWidth-20), random(window.innerHeight-20)), 10+ negative *random(5));
     }
     
     if (negative == -1) {
