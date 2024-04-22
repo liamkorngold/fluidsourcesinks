@@ -129,8 +129,6 @@ function draw() {
         drag.mult(-1 * 0.5 * 0.47 * 0.1 * (p5.Vector.mag(blobs[i].velocity) **2 )); // negative as drag opposes velocity
         blobs[i].acceleration.add(drag);
       }
-
-      blobs[i].acceleration.add(drag);
     }
     blobs[i].velocity.add(blobs[i].acceleration);
     blobs[i].position.add(blobs[i].velocity);
@@ -150,7 +148,7 @@ function draw() {
           blobs[i] = new Blob(createVector(random(window.innerWidth),random(window.innerHeight-4)),createVector(0,0));
         }
       } else {
-        if (Math.abs(round(blobs[i].position.x - sinks_sources[j].position.x)) in [0,1,2,3,4] & Math.abs(round(blobs[i].position.y-sinks_sources[j].position.y)) in [0,1,2,3,4]) {
+        if (Math.abs(round(blobs[i].position.x - sinks_sources[j].position.x)) in [0,1] & Math.abs(round(blobs[i].position.y-sinks_sources[j].position.y)) in [0,1]) {
           blobs[i].velocity.mult(-1);
         } else if (blobs[i].position.x > window.innerWidth +5 || blobs[i].position.y > window.innerHeight || blobs[i].position.x < -5 || blobs[i].position.y  < -5) {
           blobs[i] = new Blob(createVector(random(window.innerWidth),random(window.innerHeight-4)),createVector(0,0));
