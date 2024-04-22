@@ -28,7 +28,7 @@ function setup() {
 
   background(0);
 
-  n_blobs = 1000;
+  n_blobs = 800;
   blobs = new Array(n_blobs);
 
   for (i = 0; i < n_blobs; i ++ ){
@@ -36,7 +36,7 @@ function setup() {
     blobs[i] = new Blob(createVector(random(window.innerWidth),random(window.innerHeight-4)),createVector(0,0));
   }
 
-  n_sinks_sources = 2;
+  n_sinks_sources = 4;
 
   sinks_sources = new Array(n_sinks_sources);
   negative = -1;
@@ -45,9 +45,8 @@ function setup() {
     if(round(random(1)) == 1) {
       sinks_sources[i] = new Sink(createVector(random(window.innerWidth-20),random(window.innerHeight-20)), 10+ negative * random(15));
     } else {
-      sinks_sources[i] = new Source(createVector(random(window.innerWidth-20), random(window.innerHeight-20)), 5+ negative *random(3));
+      sinks_sources[i] = new Source(createVector(random(window.innerWidth-20), random(window.innerHeight-20)), 10+ negative *random(15));
     }
-    console.log(sinks_sources[i].rate);
     
     if (negative == -1) {
       negative = 1;
@@ -111,12 +110,27 @@ function draw() {
       r_vector = p5.Vector.sub(sinks_sources[j].position, blobs[i].position);
       accel = sinks_sources[j].rate / (2 * Math.PI * r_vector.mag()**2);
       
+      // sink/source force
       if (sinks_sources[j].type == "sink") {
         blobs[i].acceleration.add(r_vector.mult(accel));  
       } else {
         blobs[i].acceleration.add(r_vector.mult(-accel));
       }
       
+      // drag force = 1/2 *C * A * p * v^2
+      // here we take C = 0.47 (sphere), A = 1, p = a smaller number (just a nice value);
+      drag = p5.Vector.normalize(blobs[i].velocity); // points in velocity direction
+      
+
+      if (sinks_sources[j].type == "sink") {
+        drag.mult(-1 * 0.5 * 0.47 * 0.1 * (p5.Vector.mag(blobs[i].velocity) **2 )); // negative as drag opposes velocity
+        blobs[i].acceleration.add(drag);  
+      } else {
+        drag.mult(-1 * 0.5 * 0.47 * 0.1 * (p5.Vector.mag(blobs[i].velocity) **2 )); // negative as drag opposes velocity
+        blobs[i].acceleration.add(drag);
+      }
+
+      blobs[i].acceleration.add(drag);
     }
     blobs[i].velocity.add(blobs[i].acceleration);
     blobs[i].position.add(blobs[i].velocity);
@@ -127,16 +141,23 @@ function draw() {
   for (i = 0; i < n_blobs; i ++) {
     for (j = 0; j < n_sinks_sources; j++) {
       // small tolerance in case blobs aren't perfectly at the sink
-      if (Math.abs(round(blobs[i].position.x - sinks_sources[j].position.x)) in [0,1,2,3,4,5,6,7,8,9] & Math.abs(round(blobs[i].position.y-sinks_sources[j].position.y)) in [0,1,2,3,4,5,6,7,8,9]) {
-        stroke(0);
-        point(blobs[i].position);
-        blobs[i] = new Blob(createVector(random(window.innerWidth),random(window.innerHeight-4)),createVector(0,0));
-      } else if (blobs[i].position.x > window.innerWidth +5 || blobs[i].position.y > window.innerHeight || blobs[i].position.x < -5 || blobs[i].position.y  < -5) {
-        blobs[i] = new Blob(createVector(random(window.innerWidth),random(window.innerHeight-4)),createVector(0,0));
+      if (sinks_sources[j].type == "sink") {
+        if (Math.abs(round(blobs[i].position.x - sinks_sources[j].position.x)) in [0,1] & Math.abs(round(blobs[i].position.y-sinks_sources[j].position.y)) in [0,1]) {
+          stroke(0);
+          point(blobs[i].position);
+          blobs[i] = new Blob(createVector(random(window.innerWidth),random(window.innerHeight-4)),createVector(0,0));
+        } else if (blobs[i].position.x > window.innerWidth +5 || blobs[i].position.y > window.innerHeight || blobs[i].position.x < -5 || blobs[i].position.y  < -5) {
+          blobs[i] = new Blob(createVector(random(window.innerWidth),random(window.innerHeight-4)),createVector(0,0));
+        }
+      } else {
+        if (Math.abs(round(blobs[i].position.x - sinks_sources[j].position.x)) in [0,1,2,3,4] & Math.abs(round(blobs[i].position.y-sinks_sources[j].position.y)) in [0,1,2,3,4]) {
+          blobs[i].velocity.mult(-1);
+        } else if (blobs[i].position.x > window.innerWidth +5 || blobs[i].position.y > window.innerHeight || blobs[i].position.x < -5 || blobs[i].position.y  < -5) {
+          blobs[i] = new Blob(createVector(random(window.innerWidth),random(window.innerHeight-4)),createVector(0,0));
+        }
       }
+    
     }
-    
-    
   } 
 
   if (mouseIsPressed == true) {
